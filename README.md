@@ -7,13 +7,15 @@ This project provides practical guidance for systems/software engineers and teac
 - Patterns and templates for implementing NFRs in a software system.
 - Usage of [slidev](https://sli.dev/) in creating presentations in developer friendly manner that is hosted as a static website via [GitHub Pages](https://pages.github.com/).
 
-**Visit the [website]((https://evarga.github.io/nfrs-guide/)) that contains information about how NFRs drive software evolution and motivating examples why to continue reading this README file!**
+**💡 Visit the [website](https://evarga.github.io/nfrs-guide/) about how NFRs drive software evolution and why should you read the rest of this text!**
 
 The term non-functional may resonate as something non-important or related to things outside the core value stream. This is a huge blunder, as NFRs shape the architecture, and they are vital for expanding market share as well as ensuring customer retention. Some authors even refrain to use this term and many process frameworks call them supplementary or supporting requirements. We will stick to the term NFR in this project.
 
 In software development _validation_ and _verification_ are two complementary viewpoints on all activities that are driven by requirements:
 - Validation encompasses all activities for ensuring that we are building the right thing. This is the phase when requirements (both functional and NFRs) are rigorously examined for any conflicts and assurances collected that they meet customer's needs.
 - Verification is a set of activities for checking whether we are building the product right. This entails establishing quality gates to avoid bugs including those associated with departing from requirements, missing them, or simply wrongly implementing the system. For example, the company could improperly design and construct the product, so the system turns out to be too slow to meet performance aspects. This can happen even if all performance related NFRs were impeccably specified.
+
+Accurately specifying requirements and using industry best practices & patterns are vital for validation and verification activities. This documents tries to cover both aspects.
 
 ## Prerequisites
 Before we plunge into the realm of NFRs it is beneficial to give some guidance how requirements differ from user stories and what is the difference between user requirements and system/software requirements. Below is a set of curated references that should be studied:
@@ -37,7 +39,7 @@ The external attributes are usually perceivable by an end user, while the intern
 It is important to recognize that nobody should claim that this is purely a UI requirement. For a user to promptly see open order items all associated back-end services must run fast enough.
 - Availability: _99.99% uptime during peak business hours (depends on a customer's region)_.
 - Usability: _Frequent actions must be easily accessible from a UI via customizable keyboard shortcuts and toolbar_.
-Usability tests are very hard to be fully automated. This is the territory where manual testing is still prevalent. It is not an uncommon practice to borrow usability requirements from external source by mandating that specific UX guidelines should be followed[^1].
+Usability tests are very hard to be fully automated. This is the territory where manual testing is still prevalent. It is not an uncommon practice to borrow usability requirements from external sources by mandating that specific UX guidelines should be followed[^1].
 
 ### Minimally Viable Set of Quality Attributes
 There is a common set of important quality attributes abbreviated as FURPS+ (Functionality, Usability, Reliability, Performance, and Supportability). Functionality is about what the system should do, while NFRs tell how well it must perform the work. An architecture of a software system is profoundly responsible to address NFRs. If we wouldn't care about them, then functionality could be delivered in any manner, most would be useless. An excellent source of information about FURPS+ is the [OpenUP](https://www.utm.mx/~caff/doc/OpenUPWeb/) framework[^2].
@@ -98,6 +100,8 @@ All in all, process oriented NFRs are about how well a software development proc
 # Specification of NFRs
 Testability of requirements (both functional and non-functional) entails writing them down in quantifiable manner. Otherwise, there is no way to know whether something is achieved or not. The biggest difference between functional and non-functional requirements is that a well-written functional requirement is relatively straightforward to test. On the other hand, NFRs require observation, inspection, and analysis for verification besides being adequately described.
 
+Dealing with NFRs is also a sort of risk management endeavor. The more precise the NFRs are, the less risk there is that the system will not meet the expectations. The chapter [Embracing Risk](https://sre.google/sre-book/embracing-risk/) is a superb reference to read for understanding a connection with risks. Furthermore, it introduces the notion of an _error budget_ that is an indispensable concept in protecting against violations of agreements with customers (known as SLAs, elaborated in more detail later in this document).
+
 ## Planguage
 Let us go back to our earlier example of a performance related requirement, quoted here for the sake of completeness:
 > _Response time should be less than 1 second to display or refresh a webpage with order items_.
@@ -122,7 +126,7 @@ Planguage is Tom Gilb’s formal specification language for NFRs and is complete
 Most NFRs are not atomic, but rather a collection of smaller NFRs. In the above-mentioned book _Competitive Engineering_ there is an example of breaking down Serviceability into Enhancement, Installation, Fashion Changes, Reconfiguration and Repair. For example, the structured name `Serviceability.Repair` talks about a particular perspective of being serviceable. The time and easy of repairing of a system are crucial aspects of serviceability, but they are not the only one. The structured name helps to understand the context of the NFR. On the other hand, mentioning only the top-level category is meaningless, since repair is not the same as installation or reconfiguration, although all of them are part of serviceability.
 
 # Allocation of NFRs
-Much like functional requirements are distributed according to the [GRASP](https://www.pearsonhighered.com/assets/samplechapter/0/1/3/0/0130925691.pdf) patterns, NFRs must be allocated to software components. To make this statement more concrete, let us consider a simple example related to performance called _performance budget_. Suppose that a business comes up with a performance improvement regarding the response time for registering a new user. This is a quite high-level requirement that talks about the whole system. Giving this number directly to developers is pointless. This is where an architect must distribute the top-level performance figure onto individual components participating in the user registration use case. In this way, each team would receive their allowed performance budget in this business transaction. Furthermore, not all components may need to deliver top performance all the time. Everything depends on a particular use case. One way to visualize the allocation of performance budget per component is via the fishbone diagram. The branches would be contributions of components toward the final performance figure.
+Much like functional requirements are distributed according to the [GRASP](https://www.pearsonhighered.com/assets/samplechapter/0/1/3/0/0130925691.pdf) patterns, NFRs must be allocated to software components. To make this statement more concrete, let us consider a simple example related to performance called _performance budget_. Suppose that a business comes up with a performance improvement regarding the response time for registering a new user. This is a quite high-level requirement that talks about the whole system. Giving this number directly to developers is pointless. This is where an architect must distribute the top-level performance figure onto individual components participating in the user registration use case. In this way, each team would receive their allowed performance budget in this business transaction. Furthermore, not all components may need to deliver top performance all the time. Everything depends on a particular use case. One way to visualize the allocation of performance budget per component is via the [fishbone](https://miro.com/blog/how-to-get-most-of-fishbone-diagram) diagram. The branches would be contributions of components toward the final performance figure.
 
 Allocation also works in "reverse" direction when architects must reason about emergent properties of a system. In a complex distributed system, especially in service-oriented architectures, due to interrelationships of many moving parts over an asynchronous network (like, the Internet), some system properties simply emerge from these interactions. Long spanning business transactions involve coordinated effort of many components, starting from a front-end website and ending with a commit into a database. Taking out any component from this chain and analyzing it in isolation cannot tell the whole story. For example, overall reliability and security of a system often depend upon the weakest link, so an architect must consider the full set of components in each sequence of actions to evaluate whether these NFRs can be satisfied.
 
@@ -132,33 +136,35 @@ The next part of this document dissects in detail two broad categories of NFRs: 
 ## The Role of NFRs
 The overarching concept that embodies reliability or performance commitment toward customers is the service level agreement (SLA). It is usually expressed as percent of time (like, 99.9%) that an enterprise guarantees to have its system in a usable state, but it can take other forms, too. Planguage helps a lot in crafting unambiguous SLAs.
 
-The next figure shows a general template of where and how NFRs extend a process framework. Features are specified together with quantifiable acceptance criteria that are later implemented by services. Most publicly accessible features are advertised via APIs embellished with SLAs. The latter unequivocally communicates quality assumptions associated with API endpoints. It is also much easier to track down problems with SLAs, since they in some way extend the API of services. While API specifications only describe functional aspects, attached SLAs tell how well those functions behave. On the other hand, a service level objective (SLO) is an input for a team to know what sort of objective they need to meet for SLAs to be in good shape. Finally, a service level indicator (SLI) is a metric reflecting some actual state. The article [SLA vs. SLO vs. SLI: What’s the difference?](https://www.atlassian.com/incident-management/kpis/sla-vs-slo-vs-sli) thoroughly explains the differences between these three concepts.
+The next figure shows a general template of where and how NFRs extend a process framework. Features are specified together with quantifiable acceptance criteria that are later implemented by services. Most publicly accessible features are advertised via APIs embellished with SLAs. The latter unequivocally communicates quality assumptions associated with API endpoints. It is also much easier to track down problems with SLAs, since they in some way extend the API of services. While API specifications only describe functional aspects, attached SLAs tell how well those functions should behave. On the other hand, a service level objective (SLO) is an input for a team to know what sort of objective they need to meet for SLAs to be in good shape. Finally, a service level indicator (SLI) is a metric reflecting some actual state. The article [SLA vs. SLO vs. SLI: What’s the difference?](https://www.atlassian.com/incident-management/kpis/sla-vs-slo-vs-sli) thoroughly explains the differences between these three concepts.
 
 <kbd>![How NFRs Fits a Process](./docs/role-NFRs-process.svg)</kbd>
 
 NFRs interrelate business desires with DevOps/SRE practices. There is no need to duplicate efforts nor risk a misalignment between business and development. There are two main objectives accomplished with this approach:
 - Helps stakeholders attain alignment about expectations as well as give clear instructions to the development department and QA personnel how well features must be delivered.
-- Gives operations an ability to set up necessary monitoring facilities track SLIs, so that alerts are promptly sent whenever SLAs/SLOs are broken.
+- Gives operations an ability to set up necessary monitoring facilities to track SLIs, so that alerts are promptly sent whenever SLAs/SLOs are broken.
 
 ## Definition of Performance
 Performance expresses the system’s responsiveness under certain workload, resource availability, and time span. It is tightly related to reliability, as saying "a system must respond below 20ms for each user action" is not telling the full story. It must be provided with a context, like "in 99.99% of the requests." Achieving high performance all the time and above a given threshold is very hard and costly. Performance is usually defined in terms of throughput and latency (response time). Thanks to Planguage it is straightforward to illuminate many dimensions of performance including whether we are talking about user-centric viewpoint (like, mobile application startup time) or about some background process (like, the speed of a backup service).
 
 As a quick insight into the multitude of factors that influence performance (just to focus on this NFR) you might want to try out Google's [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) service for websites. It calculates a final score based upon many criteria and gives advice on how to remedy detected problems. This is a fine example of how much goes into estimating key performance metrics that should be continuously tracked in production. To make this paragraph more concrete below is an example for specifying a response time for a customer facing website:
 ```
-Tag: Performance.Latency
-Gist: The home page must provide 2 seconds or less response time in Safari, Chrome, and Edge desktop browsers 
-under normal operational conditions (around 10K users hitting the site during regular working hours) 
-over a wireless connection with 10 Mbps download speed.
-Ambition: Slow loading of a home page on our website is one of the major reasons for customer churn, 
-so the business would like to improve latency and retain customers.
-Scale: The time in seconds for loading a home page including rendering of text and images.
-Meter: The latency in seconds between selecting a home page and having it fully rendered inside a browser. 
-Measurements should be repeated and checked that the given objective is met for 95% of the cases. 
-The time should exclude cache warmup, so testing should start after a couple of attempts.
+Tag:      Performance.Latency
+Gist:     The home page must provide 2 seconds or less response time in Safari, Chrome, and
+          Edge desktop browsers under normal operational conditions (around 10K users hitting
+          the site during regular working hours) over a wireless connection with 10 Mbps 
+          download speed.
+Ambition: Slow loading of a home page on our website is one of the major reasons for 
+          customer churn, so the business would like to improve latency and retain customers.
+Scale:    The time in seconds for loading a home page including rendering of text and images.
+Meter:    The latency in seconds between selecting a home page and having it fully rendered 
+          inside a browser. Measurements should be repeated and checked that the given 
+          objective is met for 95% of the cases. The time should exclude cache warmup, so 
+          testing should start after a couple of attempts.
 Baseline: 3
-Fail: 2
-Goal: 1.5
-Stretch: 1
+Fail:     2
+Goal:     1.5
+Stretch:  1
 ```
 
 What are all the dimensions tackled in the above example? The measurement must precisely describe what is included and excluded. For example, here we explicitly state that cache warm-up (contacting backend services for initial data should be skipped) and presentation of a full page is the goal (not only partially loaded site without all images). Furthermore, we must be clear about operational conditions (regime), supported browsers, and assumed network connection. Apparently, browser support touches upon portability and compatibility, so it is rarely the case that you can view NFRs in a purely isolated manner. All these details are mandatory to have meaningful performance tests and ways to set up monitoring in production. Alarms could be directly defined based upon constraints enlisted in the NFRs description.
@@ -171,53 +177,59 @@ Scalability tells us how amenable our system is pertaining to increase in worklo
 
 Obviously, purely adding more resources doesn't solve the issue. A system must be designed with scalability in mind. For example, a serial algorithm will not benefit from being run on a multicore CPU. Crafting an efficient parallel algorithm is both a science and art. The same is true for building state of the art distributed solutions.
 ```
-Tag: Performance.Scalability
-Gist: The registration service cluster must be scalable to handle as many as 1000 registrations per minute 
-during peak business hours (depends on a customer’s region). In calm periods the cluster should expect 
-around 400 registrations per minute.
-Ambition: We must create a flexible auto-scaling cluster to address urgent rise in requests as well as 
-preserve resources and save money. It makes no sense to always run a system in full capacity.
-Scale: The utilization of a cluster depending on the current load and period.
-Meter: The number of registration services running in parallel depending on the load as well as period. 
-In peak business hours the number of instances should be higher than in regular hours (in essence, 
-we want the utilization to be lower during peak hours to reserve extra space for sudden spikes). 
-Depending on throughput of individual instances, additional services should be automatically started 
-whenever a cluster cannot keep up with demand. Also, when demand drops a cluster's size should be 
-gradually reduced.
+Tag:      Performance.Scalability
+Gist:     The registration service cluster must be scalable to handle as many as 1000
+          registrations per minute during peak business hours (depends on a customer’s 
+          region). In calm periods the cluster should expect around 400 registrations 
+          per minute.
+Ambition: We must create a flexible auto-scaling cluster to address urgent rise in requests
+          as well as preserve resources and save money. It makes no sense to always run a 
+          system in full capacity.
+Scale:    The utilization of a cluster depending on the current load and period.
+Meter:    The number of registration services running in parallel depending on the load 
+          as well as period. In peak business hours the number of instances should be 
+          higher than in regular hours (in essence, we want the utilization to be lower 
+          during peak hours to reserve extra space for sudden spikes). Depending on 
+          throughput of individual instances, additional services should be automatically 
+          started whenever a cluster cannot keep up with demand. Also, when demand drops a 
+          cluster's size should be gradually reduced.
 Baseline: Fixed 4 instances all the time.
-Fail: 50% in peak hours and 75% otherwise for any given load.
-Goal: 60% in peak hours and 85% otherwise for any given load.
-Stretch: 70% in peak hours and 95% otherwise for any given load.
+Fail:     50% in peak hours and 75% otherwise for any given load.
+Goal:     60% in peak hours and 85% otherwise for any given load.
+Stretch:  70% in peak hours and 95% otherwise for any given load.
 ```
 
 ### Performance.Capacity
 This quality attribute speaks about a maximum attainable performance given the current set of resources. It is tightly coupled with scalability since the latter tries to alter the available resources to meet demand. Capacity is usually expressed in terms of top throughput and latency.
 ```
-Tag: Performance.Capacity
-Gist: The registration service cluster must be capable of processing 1000 registrations per minute.
-Ambition: We must be prepared to accept spikes in registration events without losing potential customers. 
-It has been noticed that people tend to register when some important change happens in a market.
-Scale: The number of registrations per minute.
-Meter: The number of registrations should be calculated over the whole cluster.
+Tag:      Performance.Capacity
+Gist:     The registration service cluster must be capable of processing 1000 registrations
+          per minute.
+Ambition: We must be prepared to accept spikes in registration events without losing 
+          potential customers. It has been noticed that people tend to register when some
+          important change happens in a market.
+Scale:    The number of registrations per minute.
+Meter:    The number of registrations should be calculated over the whole cluster.
 Baseline: 600
-Fail: 900
-Goal: 1000
-Stretch: 1200
+Fail:     900
+Goal:     1000
+Stretch:  1200
 ```
 
 ### Performance.Throughput
 Throughput is an ability to perform some number of operations per time (for example, 5K requests/second). It is important to note that usually throughput and latency (see below) are opposite goals. A system optimized for batch processing may not be adequate for interactive use cases, i.e., where users may expect to receive an answer quickly. It is a common approach nowadays to have segregated API endpoints, one accepting bulk requests, while the other responding to individual queries. Another technique that applies both to throughput and latency is to separate command (write) and query (read) actions at the level of API (see the [CQRS](https://martinfowler.com/bliki/CQRS.html) pattern).
 ```
-Tag: Performance.Throughput
-Gist: Each instance of a registration service must handle at least 200 registrations per minute.
-Ambition: We must handle as many registration events as possible to avoid losing potential customers. 
-No customer should be rejected due to contention.
-Scale: The number of registrations per minute.
-Meter: The number of registrations should be calculated per instance.
+Tag:      Performance.Throughput
+Gist:     Each instance of a registration service must handle at least 200 registrations per
+          minute.
+Ambition: We must handle as many registration events as possible to avoid losing potential 
+          customers. No customer should be rejected due to contention.
+Scale:    The number of registrations per minute.
+Meter:    The number of registrations should be calculated per instance.
 Baseline: 100
-Fail: 150
-Goal: 200
-Stretch: 300
+Fail:     150
+Goal:     200
+Stretch:  300
 ```
 
 ### Performance.Latency
@@ -225,7 +237,7 @@ This NFR talks about the wait time that a client needs to allocate for receiving
 
 ## Definition of Reliability
 Reliability is an ability of a system to maintain its integrity, accuracy, and performance in each time span even in case of exceptions and faults. It is expressed as percentage (probability) that a software will not fail for some defined period. Reliability is tightly correlated with overall quality. The usual metrics related to reliability are:
-- [Mean time between failures (MTBF) & mean downtime (MDT)](https://en.wikipedia.org/wiki/Mean_time_between_failures))
+- [Mean time between failures (MTBF) & mean downtime (MDT)](https://en.wikipedia.org/wiki/Mean_time_between_failures)
 - [Failure rate](https://en.wikipedia.org/wiki/Failure_rate) as an indirect metric that impacts MTBF
 - Code quality score (like, the one produced by SonarQube) could be a good indicator of future production problems, hence tacitly influencing reliability
 
@@ -238,20 +250,22 @@ Beware that a system can be 100% reliable while still having a catastrophic avai
 
 A powerful way to portray the desired level of availability is via financial losses due to downtimes. The idea is to calculate how much it costs for a system to be unavailable for some period. A standard formula for measuring availability is a function of length of period and time while the system is unavailable:
 
-$$system availability (%) = \frac{period length - downtime duration}{period length}$$
+$$\textrm{system availability (%)}=\frac{\textrm{period length}-\textrm{downtime duration}}{\textrm{period length}}$$
 
 It doesn't take too much to have fewer nines than desired. For example, having 30 minutes of downtime per month (assuming 30 days per month) results in 99.93% availability and with 50 minutes the availability drops to 99.88% (one nine is gone). The [percentage table](https://en.wikipedia.org/wiki/High_availability#Percentage_calculation) gives a quick overview of these dependencies.
 ```
-Tag: Reliability.Availability
-Gist: The registration service must reach 99.9% uptime during peak business hours (depends on a customer's region).
-Ambition: Without being able to promptly turn leads into customers jeopardizes the bottom line of our company. 
-The registration service must be constantly available for users to become registered in our system.
-Scale: The system availability expressed in percentage.
-Meter: The formula for calculating availability as described above.
+Tag:      Reliability.Availability
+Gist:     The registration service must reach 99.9% uptime during peak business hours 
+          (depends on a customer's region).
+Ambition: Without being able to promptly turn leads into customers jeopardizes the bottom
+          line of our company. The registration service must be constantly available for 
+          users to become registered in our system.
+Scale:    The system availability expressed in percentage.
+Meter:    The formula for calculating availability as described above.
 Baseline: 95%
-Fail: 98%
-Goal: 99.9%
-Stretch: 99.99%
+Fail:     98%
+Goal:     99.9%
+Stretch:  99.99%
 ```
 
 ### Reliability.Recoverability
@@ -264,23 +278,23 @@ The usual metrics for tracking this NFRs are:
 Again, this quality characteristic is interrelated with supportability, since recovery time is directly proportional to the level of support one may expect regarding a system.
 
 #### Problem vs. Solution Space
-One of the biggest mistakes is to state requirements in terms of a solution instead of a problem. In other words, talking about _How_ instead of _What_. This rule applies to all sorts of requirements. The following text is disputable, as it talks inside a solution space:
+We will exemplify this NFR by also reflecting on a specific conundrum pertaining to requirements engineering. One of the biggest mistakes is to state requirements in terms of a solution instead of a problem. In other words, talking about _How_ instead of _What_. This rule applies to all sorts of requirements. The following text is disputable, as it talks inside a solution space:
 > All generated reports must be backed up inside a centralized PostgreSQL database every 24 hours.
 
 The above requirement is not about a concrete business domain, but regarding the internal architecture impacting all backlog items. It is a good indication that we are seeing a disguised NFR. Unfortunately, it is defined in terms of a solution space with even low-level implementation details. Notice that this NFR is an internal user requirement, as businesspeople want to keep their reports safely. Nonetheless, a better formulation might look like as follows:
 ```
-Tag: Reliability.Recoverability
-Gist: The system must archive old reports.
-Ambition: All generated reports must be safely stored no later than 24 hours since their creation. 
-These cannot be easily reproduced anymore from cached (work) data.
-Scale: The percent of saved reports whose age is greater than 24 hours.
-Meter: The ratio of old reports saved / total number of old reports taken into account in the 
-last archiving session.
+Tag:      Reliability.Recoverability
+Gist:     The system must archive old reports.
+Ambition: All generated reports must be safely stored no later than 24 hours since their 
+          creation. These cannot be easily reproduced anymore from cached (work) data.
+Scale:    The percent of saved reports whose age is greater than 24 hours.
+Meter:    The ratio of old reports saved / total number of old reports taken into account
+          in the last archiving session.
 Baseline: 80%
-Fail: 80%
-Goal: 90%
-Stretch: 95%
-Past: 60%
+Fail:     80%
+Goal:     90%
+Stretch:  95%
+Past:     60%
 ```
 
 Observe the usage of the new Planguage keyword `Past`, which is an optional historical data. Occasionally, it makes sense to emphasize how well the system performed in the past. The above NFR explicitly announces that fresh reports (younger than 24 hours) can be reproduced with available data, but older ones would be gone without this archiving facility. There is no mentioning of database technology, and it is much clearer what that 24 hours part means. An architect should externalize this time parameter. Otherwise, testing this NFR would be cumbersome, especially with a hard coded value of 24 hours.
@@ -295,16 +309,16 @@ A robust system me offer and apply the following three major tactics:
 
 Suppose we encounter the following ambiguous NFR statement: _The system must behave reliably_. It is pretty sure that you've witnessed such requirements in the past. This is a typical example of a bad wording. It is not testable, nor specify what sort of reliability it is all about. Here is the fixed variant:
 ```
-Tag: Reliability.Robustness
-Gist: The system must tolerate extra optional fields in a JSON document.
+Tag:      Reliability.Robustness
+Gist:     The system must tolerate extra optional fields in a JSON document.
 Ambition: Enforce services to accept backward compatible changes, thus avoid missing events; 
-follow the tenets of the robustness principle.
-Scale: The number of rejected messages containing backward compatible changes.
-Meter: The number of unprocessed documents redirected into a DLQ inside a 24 hours window.
+          follow the tenets of the robustness principle.
+Scale:    The number of rejected messages containing backward compatible changes.
+Meter:    The number of unprocessed documents redirected into a DLQ inside a 24 hours window.
 Baseline: 180
-Fail: 150
-Goal: 100
-Stretch: 30
+Fail:     150
+Goal:     100
+Stretch:  30
 ```
 
 #### Fault vs. Failure
@@ -314,22 +328,24 @@ Suppose that you have a piece of code that makes a division without testing whet
 ### Reliability.Observability
 Observability of the system is an internal attribute (like, testability, maintainability, etc.) not directly perceivable by a customer, although very important for the success of a product. It tells how easy it is to supervise a system in production. NFRs usually require advanced monitoring of the production system. When NFRs are correctly specified, then DevOps engineers may directly use them to set alarms in monitoring tools. QA personnel can easily check whether they are met before placing the system into the hands of a customer. Using monitoring tools is mandatory, as discrepancies between promised and actual values must be promptly detected, alarmed, and rectified. Many metrics could be collected whilst observing a system. Hence, some standardization of metrics[^6] may help a lot.
 ```
-Tag: Reliability.Observability
-Gist: All services must send startup/shutdown events toward the monitoring system.
-Ambition: There is a desire to track how many times services are restarted for a multitude of reasons. 
-The monitoring system would produce an alarm when some instance is restarted too many times.
-Scale: The count of the number of start/shutdown pairs inside a configurable time interval (window).
-Meter: Services should send time stamped startup/shutdown events toward the monitoring system. 
-It would aggregate these over a period and issue an alarm when the count is above threshold.
+Tag:      Reliability.Observability
+Gist:     All services must send startup/shutdown events toward the monitoring system.
+Ambition: There is a desire to track how many times services are restarted for a multitude
+          of reasons. The monitoring system would produce an alarm when some instance is 
+          restarted too many times.
+Scale:    The count of the number of start/shutdown pairs inside a configurable time 
+          interval (window).
+Meter:    Services should send time stamped startup/shutdown events toward the monitoring 
+          system. It would aggregate these over a period and issue an alarm when the count
+           is above threshold.
 Baseline: 10
-Fail: 7
-Goal: 5
-Stretch: 3
+Fail:     7
+Goal:     5
+Stretch:  3
 ```
 
 # Conclusion
-This paper introduced NFRs from two perspectives: product and process. The former is about the quality of a system, while the latter is about the quality of the development process. The importance of NFRs is underscored by the fact that they shape the architecture of a system. The paper presented the Planguage as a formal specification language for NFRs. The paper also discussed the allocation of NFRs to software components.
-
+This document introduced NFRs from two perspectives: product and process. The former is about the quality of a system, while the latter is about the quality of the development process. The importance of NFRs is underscored by the fact that they shape the architecture of a system. You have seen the Planguage as a formal specification language for NFRs. The allocation of NFRs to software components were discussed, as well as the taxonomy of NFRs. The document also delved into performance and reliability, two broad categories of NFRs. The next step is to apply these principles in practice.
 
 [^1]: For example, the set of conventions that constitute a good design for Android devices, [learn more](https://developer.android.com/design).
 [^2]: Navigate to OpenUP Work Products > Requirements > Supporting Requirements Specification > 🔑 Supporting Requirements.
