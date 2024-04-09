@@ -250,7 +250,7 @@ Beware that a system can be 100% reliable while still having a catastrophic avai
 
 A powerful way to portray the desired level of availability is via financial losses due to downtimes. The idea is to calculate how much it costs for a system to be unavailable for some period. A standard formula for measuring availability is a function of length of period and time while the system is unavailable:
 
-$$\textrm{system availability [%]}=100\frac{\textrm{period length}-\textrm{downtime duration}}{\textrm{period length}}$$
+$$\textrm{system availability} \left [% \right ]=100*\frac{\textrm{period length}-\textrm{downtime duration}}{\textrm{period length}}$$
 
 It doesn't take too much to have fewer nines than desired. For example, having 30 minutes of downtime per month (assuming 30 days per month) results in 99.93% availability and with 50 minutes the availability drops to 99.88% (one nine is gone). The [percentage table](https://en.wikipedia.org/wiki/High_availability#Percentage_calculation) gives a quick overview of these dependencies.
 ```
