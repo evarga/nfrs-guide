@@ -250,7 +250,7 @@ Beware that a system can be 100% reliable while still having a catastrophic avai
 
 A powerful way to portray the desired level of availability is via financial losses due to downtimes. The idea is to calculate how much it costs for a system to be unavailable for some period. A standard formula for measuring availability is a function of length of period and time while the system is unavailable:
 
-$$\textrm{system availability (%)}=\frac{\textrm{period length}-\textrm{downtime duration}}{\textrm{period length}}$$
+$$\textrm{system availability [%]}=100\frac{\textrm{period length}-\textrm{downtime duration}}{\textrm{period length}}$$
 
 It doesn't take too much to have fewer nines than desired. For example, having 30 minutes of downtime per month (assuming 30 days per month) results in 99.93% availability and with 50 minutes the availability drops to 99.88% (one nine is gone). The [percentage table](https://en.wikipedia.org/wiki/High_availability#Percentage_calculation) gives a quick overview of these dependencies.
 ```
@@ -272,7 +272,7 @@ Stretch:  99.99%
 Recoverability in this context speaks about an ability for providing remedial changes to a code base to fix issues. It is expressed as a probability of having problems corrected in some defined period. It is tightly related to maintainability and evolution, which is a huge topic. If fixing errors takes too long, then improving upon recoverability should be heralded as a full-blown backlog item (including its prioritization). The longer it takes to put a system back into an operational condition hurts both reliability and availability.
 
 The usual metrics for tracking this NFRs are:
-- [Mean time to repair](https://en.wikipedia.org/wiki/Mean_time_to_repair)
+- [Meantime to repair](https://en.wikipedia.org/wiki/Mean_time_to_repair)
 - [Recovery time objective (RTO) & recovery point objective (RPO)](https://en.wikipedia.org/wiki/Disaster_recovery) as part of a disaster recovery domain
 
 Again, this quality characteristic is interrelated with supportability, since recovery time is directly proportional to the level of support one may expect regarding a system.
@@ -344,8 +344,31 @@ Goal:     5
 Stretch:  3
 ```
 
+# Patterns and Tools for Handling NFRs
+Many big cloud providers (Amazon, Google, Microsoft) offer a plethora of tools for monitoring and managing NFRs. They also offer complete guidance on how to craft an architecture that incorporates pertinent NFRs. For example, The [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected)'s foundation is consisted of six pillars that include best practices and principles to meet important NFRs:
+- operational excellence 
+- performance excellence 
+- security 
+- reliability 
+- cost optimization 
+- sustainability
+
+Suppose there is a need to build a solution that incorporates health checks and manage dependencies to avoid critical failures due to call chains. Instead of trying to figure out all the details from scratch, both architects and developers may select the specific part(s) of a reliability pillar and even try things out via labs (for example, see [this](https://www.wellarchitectedlabs.com/reliability/300_labs/300_health_checks_and_dependencies/) advanced lab).
+
+Microsoft has a similar initiative called [Azure Architecture Center](https://docs.microsoft.com/en-us/azure/architecture) that offers a wealth of information about how to design a system that meets NFRs. The [Azure Well-Architected Framework](https://docs.microsoft.com/en-us/azure/architecture/framework) is a collection of best practices and principles to help architects and developers to build a system that is reliable, secure, and cost-effective.
+
+There are many ways to manage requirements (including NFRs), but any manual approach hinders agility and is surely not a scalable approach. Depending on the ecosystem in use, there are many tools that can help in managing NFRs. The following list is a non-exhaustive collection of such tools:
+- [ReQtest](https://reqtest.com/en/)
+- [SpiraTeam](https://www.inflectra.com/SpiraTeam)
+- [Tuleap](https://www.tuleap.org/)
+- [Yodiz](https://www.yodiz.com/)
+- [ReqView](https://www.reqview.com/)
+- [R4J - Requirements Management for Jira](https://marketplace.atlassian.com/apps/1213064/r4j-requirements-management-for-jira) is an add-on for Jira
+
+Most support the [Requirements Interchange Format](https://www.omg.org/reqif/) for exchanging requirements. It is a well-known fact that an interoperable and well-integrated set of tools is a mandatory precondition to avoid bottlenecks in the development lifecycle. This should be a primary driver in deciding what tool to use. 
+
 # Conclusion
-This document introduced NFRs from two perspectives: product and process. The former is about the quality of a system, while the latter is about the quality of the development process. The importance of NFRs is underscored by the fact that they shape the architecture of a system. You have seen the Planguage as a formal specification language for NFRs. The allocation of NFRs to software components were discussed, as well as the taxonomy of NFRs. The document also delved into performance and reliability, two broad categories of NFRs. The next step is to apply these principles in practice.
+This document introduced NFRs from two perspectives: product and process. The former is about the quality of a system, while the latter is about the quality of the development process. The importance of NFRs is underscored by the fact that they shape the architecture of a system. You have seen the Planguage as a formal specification language for NFRs. The allocation of NFRs to software components were discussed, as well as the taxonomy of NFRs. The document also delved into performance and reliability, two broad categories of NFRs. Finally, reflection on patterns and tool support concluded the document. The next step is to apply these principles in practice.
 
 [^1]: For example, the set of conventions that constitute a good design for Android devices, [learn more](https://developer.android.com/design).
 [^2]: Navigate to OpenUP Work Products > Requirements > Supporting Requirements Specification > 🔑 Supporting Requirements.
