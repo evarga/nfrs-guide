@@ -140,6 +140,8 @@ The next figure shows a general template of where and how NFRs extend a process 
 
 <kbd>![How NFRs Fits a Process](./docs/role-NFRs-process.svg)</kbd>
 
+NFRs play a key role in being able to efficiently integrate tools for handling SLAs. For example, DefectDojo offers a help in maintaining [security SLAs](https://documentation.defectdojo.com/usage/features/#service-level-agreement-sla) and producing tests resulting in various findings is much easier once there are proper NFRs specified in formal manner.
+
 NFRs interrelate business desires with DevOps/SRE practices. There is no need to duplicate efforts nor risk a misalignment between business and development. There are two main objectives accomplished with this approach:
 - Helps stakeholders attain alignment about expectations as well as give clear instructions to the development department and QA personnel how well features must be delivered.
 - Gives operations an ability to set up necessary monitoring facilities to track SLIs, so that alerts are promptly sent whenever SLAs/SLOs are broken.
