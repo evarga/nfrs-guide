@@ -275,7 +275,7 @@ Recoverability in this context speaks about an ability for providing remedial ch
 
 The usual metrics for tracking this NFRs are:
 - [Meantime to repair](https://en.wikipedia.org/wiki/Mean_time_to_repair)
-- [Recovery time objective (RTO) & recovery point objective (RPO)](https://en.wikipedia.org/wiki/Disaster_recovery) as part of a disaster recovery domain
+- [Recovery time objective (RTO) & recovery point objective (RPO)](https://www.acronis.com/en-us/blog/posts/rto-rpo/) as part of a disaster recovery domain
 
 Again, this quality characteristic is interrelated with supportability, since recovery time is directly proportional to the level of support one may expect regarding a system.
 
