@@ -33,7 +33,7 @@ jobs:
         working-directory: ./site
 
       - name: Build
-        run: npm run build -- --base /${{ github.event.repository.name }}/ --router-mode hash
+        run: npm run build
         working-directory: ./site
 
       - uses: actions/configure-pages@v5
